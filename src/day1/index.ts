@@ -21,4 +21,15 @@ const groupSums = numberOfGroups.map(getSumOfGroup);
 
 const maxSum = Math.max(...groupSums);
 
-console.log(maxSum);
+// console.log(maxSum);
+
+// Part 2 Find the 3 groups that hold the highest sum and add them up
+
+const sortedGroupSums = [...groupSums].sort((a, b) => b - a);
+// console.log(sortedGroupSums);
+
+const topThreeSums = sortedGroupSums.slice(0, 3);
+console.log(topThreeSums);
+
+const sumOfTopThree = topThreeSums.reduce((sum, num) => sum + num, 0);
+console.log(sumOfTopThree);
