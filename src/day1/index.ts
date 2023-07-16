@@ -7,7 +7,7 @@
 import fs from "fs";
 
 //read the input file
-const input = fs.readFileSync("input.txt", "utf8");
+const input = fs.readFileSync("src/day1/input.txt", "utf8");
 
 const getSumOfGroup = (group: string) =>
   group
