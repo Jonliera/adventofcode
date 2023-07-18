@@ -28,8 +28,6 @@ o - lose
 6 - win
 */
 
-const score = 0;
-
 // write a function to get the game score and move score
 
 // const gameScore = (op: string, me: string) => {
@@ -105,25 +103,19 @@ const moveScore = (me: string) => moveScores[me] || 0;
 //get the scores of all games
 
 const playGame = (op: string, me: string) => {
-  const game = gameScore(op, me);
+  const game = gameScore(op, me) || 0; // Use default value 0 if gameScore returns undefined
   const move = moveScore(me);
-
-  if (game === undefined) {
-    // Handle the case when gameScore returns undefined
-    // You can either return a default value or throw an error, depending on your requirements
-    throw new Error("gameScore returned undefined");
-  }
-
   return game + move;
 };
 
 const newGame = () => {
-  //loop through the input
-  let score = 0;
-  for (const game of input) {
-    score += playGame(game[0], game[1]);
-  }
-  console.log(score);
+  const totalScore = input.reduce(
+    (acc, game) => acc + playGame(game[0], game[1]),
+    0
+  );
+  console.log(totalScore);
 };
 
 newGame();
+
+// Part 2
