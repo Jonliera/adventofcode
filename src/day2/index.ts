@@ -1,13 +1,58 @@
 //import the file system module
 import fs from "fs";
 
+type Lookup = Record<string, string>;
+const winLookUp: Lookup = {
+  ROCK: "SCISSORS",
+  SCISSORS: "PAPER",
+  PAPER: "ROCK",
+};
+
+const opponentMove: Lookup = {
+  A: "ROCK",
+  B: "PAPER",
+  C: "SCISSORS",
+};
+
+const meMove: Lookup = {
+  X: "ROCK",
+  Y: "PAPER",
+  Z: "SCISSORS",
+};
+
+type PointLookup = Record<string, number>;
+const pointsLookup: PointLookup = {
+  ROCK: 1,
+  PAPER: 2,
+  SCISSORS: 3,
+};
+
+let score = 0;
+
 //read the input file
 const input = fs
-  .readFileSync("src/day2/input.txt", "utf8")
+  .readFileSync("./input.txt", "utf8")
   .trim()
   .split("\n")
-  .map((line) => line.split(" "));
-console.log(input);
+  .map((line) => line.split(" "))
+  .forEach(([opponent, me]) => {
+    const opponentRealMove = opponentMove[opponent];
+    const myRealMove = meMove[me];
+
+    score += pointsLookup[myRealMove];
+
+    if (opponentRealMove === myRealMove) {
+      score += 3;
+    }
+    // opponents beats us
+    else if (winLookUp[opponentRealMove] === myRealMove) {
+      score += 0;
+    } else if (winLookUp[myRealMove] === opponentRealMove) {
+      score += 6;
+    }
+  });
+console.log(score);
+// console.log(input);
 
 /*
 rock - 1 
@@ -108,14 +153,14 @@ const playGame = (op: string, me: string) => {
   return game + move;
 };
 
-const newGame = () => {
-  const totalScore = input.reduce(
-    (acc, game) => acc + playGame(game[0], game[1]),
-    0
-  );
-  console.log(totalScore);
-};
+// const newGame = () => {
+//   const totalScore = input.reduce(
+//     (acc, game) => acc + playGame(game[0], game[1]),
+//     0
+//   );
+//   console.log(totalScore);
+// };
 
-newGame();
+// newGame();
 
 // Part 2
