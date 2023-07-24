@@ -1,57 +1,91 @@
 //import the file system module
 import fs from "fs";
+import readline from "readline";
 
-type Lookup = Record<string, string>;
-const winLookUp: Lookup = {
-  ROCK: "SCISSORS",
-  SCISSORS: "PAPER",
-  PAPER: "ROCK",
-};
+type Moves = "ROCK" | "PAPER" | "SCISSORS";
 
-const opponentMove: Lookup = {
-  A: "ROCK",
-  B: "PAPER",
-  C: "SCISSORS",
-};
+const winLookUp = new Map<Moves, Moves>();
+winLookUp.set("ROCK", "SCISSORS");
+winLookUp.set("SCISSORS", "PAPER");
+winLookUp.set("PAPER", "ROCK");
 
-const meMove: Lookup = {
-  X: "ROCK",
-  Y: "PAPER",
-  Z: "SCISSORS",
-};
+const move = new Map<string, Moves>();
+move.set("A", "ROCK");
+move.set("B", "PAPER");
+move.set("C", "SCISSORS");
+move.set("X", "ROCK");
+move.set("Y", "PAPER");
+move.set("Z", "SCISSORS");
 
-type PointLookup = Record<string, number>;
-const pointsLookup: PointLookup = {
-  ROCK: 1,
-  PAPER: 2,
-  SCISSORS: 3,
-};
+const pointsLookup = new Map<Moves, number>();
+pointsLookup.set("ROCK", 1);
+pointsLookup.set("PAPER", 2);
+pointsLookup.set("SCISSORS", 3);
 
 let score = 0;
 
+const rl = readline.createInterface({
+  input: fs.createReadStream("./input.txt"),
+});
+
+rl.on("line", (line) => {
+  const [opponent, me] = line.split(" ");
+
+  const opponentRealMove = move.get(opponent);
+  const myRealMove = move.get(me);
+
+  if (!opponentRealMove || !myRealMove) throw new Error("kaboom");
+
+  score += pointsLookup.get(myRealMove) || 0;
+
+  if (opponentRealMove === myRealMove) {
+    score += 3;
+  }
+  // Opponents beats us
+  else if (winLookUp.get(opponentRealMove) === myRealMove) {
+    score += 0;
+  }
+  // We beat opponent
+  else if (winLookUp.get(myRealMove) === opponentRealMove) {
+    score += 6;
+  }
+});
+
+rl.on("close", () => {
+  console.log(score);
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(
+    `The script uses approximately ${Math.round(used * 100) / 100} MB`
+  );
+});
+
 //read the input file
-const input = fs
-  .readFileSync("./input.txt", "utf8")
-  .trim()
-  .split("\n")
-  .map((line) => line.split(" "))
-  .forEach(([opponent, me]) => {
-    const opponentRealMove = opponentMove[opponent];
-    const myRealMove = meMove[me];
+// const input = fs
+//   .readFileSync("./input.txt", "utf8")
+//   .trim()
+//   .split("\n")
+//   .map((line) => line.split(" "))
+//   .forEach(([opponent, me]) => {
+//     const opponentRealMove = opponentMove.get(opponent);
+//     const myRealMove = meMove.get(me);
 
-    score += pointsLookup[myRealMove];
+//     if (!opponentRealMove || !myRealMove) throw new Error("kaboom");
 
-    if (opponentRealMove === myRealMove) {
-      score += 3;
-    }
-    // opponents beats us
-    else if (winLookUp[opponentRealMove] === myRealMove) {
-      score += 0;
-    } else if (winLookUp[myRealMove] === opponentRealMove) {
-      score += 6;
-    }
-  });
-console.log(score);
+//     score += pointsLookup.get(myRealMove) || 0;
+
+//     if (opponentRealMove === myRealMove) {
+//       score += 3;
+//     }
+//     // opponents beats us
+//     else if (winLookUp.get(opponentRealMove) === myRealMove) {
+//       score += 0;
+//     } else if (winLookUp.get(myRealMove) === opponentRealMove) {
+//       score += 6;
+//     }
+//   });
+// const used = process.memoryUsage().heapUsed / 1024 / 1024;
+// console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
+// console.log(score);
 // console.log(input);
 
 /*
@@ -73,85 +107,33 @@ o - lose
 6 - win
 */
 
-// write a function to get the game score and move score
-
-// const gameScore = (op: string, me: string) => {
-//   //oppoent chooses rock
-//   if (op === "A") {
-//     if (me === "X") {
-//       //me chooses rock
-//       return 3;
-//     } else if (me === "Y") {
-//       //me chooses paper
-//       return 6;
-//     } else {
-//       //me chooses scissors
-//       return 0;
-//     }
-//   }
-//   //opponent chooses paper
-//   if (op === "B") {
-//     if (me === "X") {
-//       //me chooses rock
-//       return 0;
-//     } else if (me === "Y") {
-//       //me chooses paper
-//       return 3;
-//     } else {
-//       //me chooses scissors
-//       return 6;
-//     }
-//   }
-//   //opponent chooses scissors
-//   if (op === "C") {
-//     if (me === "X") {
-//       //me chooses rock
-//       return 6;
-//     } else if (me === "Y") {
-//       //me chooses paper
-//       return 0;
-//     } else {
-//       //me chooses scissors
-//       return 3;
-//     }
-//   }
-// };
-
 // new function less code :
 
-const gameScore = (op: string, me: string) => {
-  const scores: Record<string, Record<string, number>> = {
-    A: { X: 3, Y: 6, Z: 0 },
-    B: { X: 0, Y: 3, Z: 6 },
-    C: { X: 6, Y: 0, Z: 3 },
-  };
+// const gameScore = (op: string, me: string) => {
+//   const scores: Record<string, Record<string, number>> = {
+//     A: { X: 3, Y: 6, Z: 0 },
+//     B: { X: 0, Y: 3, Z: 6 },
+//     C: { X: 6, Y: 0, Z: 3 },
+//   };
 
-  return scores[op]?.[me] ?? 0;
-};
-
-//get the score of each move
-// const moveScore = (me: string) => {
-//   if (me === "X") return 1; //me chooses rock
-//   if (me === "Y") return 2; //me chooses paper
-//   if (me === "Z") return 3; //me chooses scissors
-//   return 0;
+//   return scores[op]?.[me] ?? 0;
 // };
 
-const moveScores: Record<string, number> = {
-  X: 1, // rock
-  Y: 2, // paper
-  Z: 3, // scissors
-};
+// const moveScores: Record<string, number> = {
+//   X: 1, // rock
+//   Y: 2, // paper
+//   Z: 3, // scissors
+// };
 
-const moveScore = (me: string) => moveScores[me] || 0;
+// const moveScore = (me: string) => moveScores[me] || 0;
 
-//get the scores of all games
+// //get the scores of all games
 
-const playGame = (op: string, me: string) => {
-  const game = gameScore(op, me) || 0; // Use default value 0 if gameScore returns undefined
-  const move = moveScore(me);
-  return game + move;
-};
+// const playGame = (op: string, me: string) => {
+//   const game = gameScore(op, me) || 0; // Use default value 0 if gameScore returns undefined
+//   const move = moveScore(me);
+//   return game + move;
+// };
 
 // const newGame = () => {
 //   const totalScore = input.reduce(
@@ -164,3 +146,54 @@ const playGame = (op: string, me: string) => {
 // newGame();
 
 // Part 2
+
+/*
+x is lose
+y is draw
+z is win
+*/
+
+// type solutionLookup = Record<string, Record<string, string>>;
+// const outCome: solutionLookup = {
+//   A: {
+//     //ROCK
+//     X: "SCISSORS", // lose
+//     Y: "ROCK", // draw
+//     Z: "PAPER", // win
+//   },
+//   B: {
+//     //PAPER
+//     X: "ROCK", // win
+//     Y: "PAPER", // draw
+//     Z: "SCISSORS", // lose
+//   },
+//   C: {
+//     //SCISSORS
+//     X: "PAPER", // win
+//     Y: "SCISSORS", // draw
+//     Z: "ROCK", // lose
+//   },
+// };
+
+// const input2 = fs
+//   .readFileSync("./input.txt", "utf8")
+//   .trim()
+//   .split("\n")
+//   .map((line) => line.split(" "))
+//   .forEach(([opponent, me]) => {
+//     const opponentRealMove = opponentMove[opponent];
+//     const myRealMove = meMove[me]; // this should be the outcome variable
+
+//     score += pointsLookup[myRealMove];
+
+//     if (opponentRealMove === myRealMove) {
+//       score += 3;
+//     }
+//     // opponents beats us
+//     else if (winLookUp[opponentRealMove] === myRealMove) {
+//       score += 0;
+//     } else if (winLookUp[myRealMove] === opponentRealMove) {
+//       score += 6;
+//     }
+//   });
+// console.log(score);
