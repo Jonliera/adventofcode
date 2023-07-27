@@ -2,25 +2,27 @@
 import fs from "fs";
 import readline from "readline";
 
-type Moves = "ROCK" | "PAPER" | "SCISSORS";
-
-const winLookUp = new Map<Moves, Moves>();
-winLookUp.set("ROCK", "SCISSORS");
-winLookUp.set("SCISSORS", "PAPER");
-winLookUp.set("PAPER", "ROCK");
-
-const move = new Map<string, Moves>();
-move.set("A", "ROCK");
-move.set("B", "PAPER");
-move.set("C", "SCISSORS");
-move.set("X", "ROCK");
-move.set("Y", "PAPER");
-move.set("Z", "SCISSORS");
-
-const pointsLookup = new Map<Moves, number>();
-pointsLookup.set("ROCK", 1);
-pointsLookup.set("PAPER", 2);
-pointsLookup.set("SCISSORS", 3);
+type solutionLookup = Record<string, Record<string, number>>;
+const outCome: solutionLookup = {
+  A: {
+    //ROCK
+    X: 3, // lose 3
+    Y: 4, // draw 4
+    Z: 8, // win 8
+  },
+  B: {
+    //PAPER
+    X: 1, // lose 1
+    Y: 5, // draw 5
+    Z: 9, // win 9
+  },
+  C: {
+    //SCISSORS
+    X: 2, // lose 2
+    Y: 6, // draw 6
+    Z: 7, // win 7
+  },
+};
 
 let score = 0;
 
@@ -29,32 +31,16 @@ const rl = readline.createInterface({
 });
 
 rl.on("line", (line) => {
-  const [opponent, outCome] = line.split(" ");
-  console.log(opponent, outCome);
-  const opponentRealMove = move.get(opponent);
-  const myRealMove = move.get(outCome);
+  const [opponent, me] = line.split(" ");
 
-  if (!opponentRealMove || !myRealMove) throw new Error("kaboom");
-
-  score += pointsLookup.get(myRealMove) || 0;
-
-  if (opponentRealMove === myRealMove) {
-    score += 3;
-  }
-  // Opponents beats us
-  else if (winLookUp.get(opponentRealMove) === myRealMove) {
-    score += 0;
-  }
-  // We beat opponent
-  else if (winLookUp.get(myRealMove) === opponentRealMove) {
-    score += 6;
-  }
+  const moveScore = outCome[opponent][me];
+  score += moveScore;
 });
 
-// rl.on("close", () => {
-//   console.log(score);
-//   const used = process.memoryUsage().heapUsed / 1024 / 1024;
-//   console.log(
-//     `The script uses approximately ${Math.round(used * 100) / 100} MB`
-//   );
-// });
+rl.on("close", () => {
+  console.log(score);
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(
+    `The script uses approximately ${Math.round(used * 100) / 100} MB`
+  );
+});
