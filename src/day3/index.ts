@@ -7,7 +7,13 @@ const rl = readline.createInterface({
 });
 
 rl.on("line", (line) => {
-  console.log(line);
+  const halfIndex = line.length / 2;
+  const [part1, part2] = [line.slice(0, halfIndex), line.slice(halfIndex)];
+  // console.log({ part1, part2 });
+
+  let part1Set = new Set(part1);
+  const filteredPart2 = part2.split("").filter((x) => part1Set.has(x));
+  console.log(filteredPart2);
 });
 
 rl.on("close", () => {
