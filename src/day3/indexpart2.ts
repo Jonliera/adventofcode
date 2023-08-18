@@ -31,12 +31,27 @@ function groupLines(input: any) {
   const groupedLines = [];
 
   for (let i = 0; i < lines.length; i += 3) {
-    const group = lines.slice(i, i + 3);
-    groupedLines.push(group);
+    groupedLines.push(lines.slice(i, i + 3));
   }
 
   return groupedLines;
 }
 
+function findSameLetterInAllLines(groupedLines: any) {
+  const sameLetters = [];
+
+  for (const group of groupedLines) {
+    const [firstLine, ...remainingLines] = group;
+    const commonChars = [...firstLine].filter((char) =>
+      remainingLines.every((line: any) => line.includes(char))
+    );
+
+    sameLetters.push(commonChars);
+  }
+
+  return sameLetters;
+}
+
 const grouped = groupLines(input);
-console.log(grouped);
+const sameLetters = findSameLetterInAllLines(grouped);
+console.log(sameLetters);
