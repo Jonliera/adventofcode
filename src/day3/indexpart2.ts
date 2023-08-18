@@ -1,57 +1,28 @@
-// //import the file system module
-// import fs from "fs";
-// import readline from "readline";
+//import the file system module
+import fs from "fs";
 
-// let sum = 0;
+//read the input file
+const input = fs.readFileSync("input.txt", "utf8").trim().split("\n");
 
-// const rl = readline.createInterface({
-//   input: fs.createReadStream("./input.txt"),
-// });
-
-// rl.on("line", (line) => {
-//   console.log(line);
-// });
-
-// rl.on("close", () => {
-//   const used = process.memoryUsage().heapUsed / 1024 / 1024;
-//   console.log(
-//     `The script uses approximately ${Math.round(used * 100) / 100} MB`
-//   );
-// });
-
-const input = `vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw`;
-
-function groupLines(input: any) {
-  const lines = input.trim().split("\n");
-  const groupedLines = [];
-
-  for (let i = 0; i < lines.length; i += 3) {
-    groupedLines.push(lines.slice(i, i + 3));
-  }
-
-  return groupedLines;
+// console.log(input);
+function lettertoNumber(letter: string) {
+  return letter.charCodeAt(0) - (/[a-z]/.test(letter) ? 96 : 38);
 }
 
-function findSameLetterInAllLines(groupedLines: any) {
-  const sameLetters = [];
+function part2() {
+  let sum = 0;
+  for (let i = 0; i < input.length; i += 3) {
+    const backpacks = [[...input[i]], [...input[i + 1]], [...input[i + 2]]];
 
-  for (const group of groupedLines) {
-    const [firstLine, ...remainingLines] = group;
-    const commonChars = [...firstLine].filter((char) =>
-      remainingLines.every((line: any) => line.includes(char))
-    );
+    let set = new Set(backpacks[0]);
+    let interserction = backpacks[1].filter((x) => set.has(x));
+    set = new Set(interserction);
+    interserction = backpacks[2].filter((x) => set.has(x));
 
-    sameLetters.push(commonChars);
+    const deduped = [...new Set(interserction)];
+
+    sum += lettertoNumber(deduped[0]);
   }
-
-  return sameLetters;
+  console.log(sum);
 }
-
-const grouped = groupLines(input);
-const sameLetters = findSameLetterInAllLines(grouped);
-console.log(sameLetters);
+part2();
