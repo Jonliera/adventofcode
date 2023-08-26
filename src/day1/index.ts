@@ -1,8 +1,3 @@
-// console.log("Hello World!");
-
-// const animals = ["dog", "cat", "bird"];
-// animals.map((animal) => console.log(animal));
-
 //import the file system module
 import fs from "fs";
 

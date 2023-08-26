@@ -19,9 +19,9 @@ function part2() {
     set = new Set(interserction);
     interserction = backpacks[2].filter((x) => set.has(x));
 
-    const deduped = [...new Set(interserction)];
+    const duplicated = [...new Set(interserction)];
 
-    sum += lettertoNumber(deduped[0]);
+    sum += lettertoNumber(duplicated[0]);
   }
   console.log(sum);
 }
