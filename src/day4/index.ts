@@ -11,6 +11,20 @@ rl.on("line", (line) => {
     .split(",")
     .map((str) => str.split("-").map(Number));
 
+  const gnome1Start = gnome1[0];
+  const gnome1End = gnome1[1];
+  const gnome2Start = gnome2[0];
+  const gnome2End = gnome2[1];
+
+  if (
+    (gnome1Start >= gnome2Start && gnome1End <= gnome2End) ||
+    (gnome1Start <= gnome2Start && gnome1End >= gnome2End)
+  ) {
+    count++;
+  }
+
+  // count how many of the pairs are fully contained in the other pair
+
   //both strings
 
   //need to have a starting number and ending number for both gnomes
@@ -24,4 +38,6 @@ rl.on("line", (line) => {
   // }
 
   console.log({ gnome1, gnome2 });
+  console.log({ gnome1Start, gnome1End, gnome2Start, gnome2End });
+  console.log(count);
 });
