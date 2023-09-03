@@ -1,21 +1,49 @@
-//import the file system module
 import fs from "fs";
 import readline from "readline";
 
 const rl = readline.createInterface({
   input: fs.createReadStream("./input.txt"),
 });
-let count = 0;
+const stacks: string[][] = [];
+const CHUNK_SIZE = 4;
 rl.on("line", (line) => {
-  const [stacks, moves] = line.split("\n\n");
+  //we know this is parsable data there is a square bracket in the lines
+  if (line.includes("[")) {
+    const length = line.length;
+    let column = 0;
+    for (let i = 0; i <= length; i += CHUNK_SIZE) {
+      if (stacks[column] === undefined) {
+        stacks[column] = [];
+      }
+      const chunk = line.slice(i, i + CHUNK_SIZE).trim();
 
-  console.log({ stacks, moves });
-});
+      if (chunk !== "") {
+        const cleanChunk = chunk.replace("[", "").replace("]", "");
+        stacks[column].unshift(cleanChunk);
+      }
+      column = column + 1;
+    }
+  }
+  // if (line.startsWith("move")) {
+  //   //   const moves = line.split(" ");
+  //   //   const count = parseInt(moves[1]);
+  //   //   const fromColumn = parseInt(moves[3]) - 1;
+  //   //   const toColumn = parseInt(moves[5]) - 1;
 
-rl.on("close", () => {
-  console.log();
-  const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  console.log(
-    `The script uses approximately ${Math.round(used * 100) / 100} MB`
-  );
+  //   // for (let i = 0; i < count; i++) {
+  //   //   const crate: any = stacks[fromColumn].pop();
+  //   //   stacks[toColumn].push(crate);
+  //   // }
+
+  //   //
+  //   //   //parse string , get count from colum and to coolumn
+  //   //   // count
+  //   //   // from column (subtract 1)
+  //   //   // to column (subtract 1)
+  //   //   console.log({ count, fromColumn, toColumn });
+  //   console.log(stacks);
+  // }
+}).on("close", () => {
+  const top_crate = stacks.map((stack) => stack[stack.length - 1]).join(" ");
+  console.log(top_crate);
 });
