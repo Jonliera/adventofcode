@@ -26,9 +26,9 @@ rl.on("line", (line) => {
   }
   if (line.startsWith("move")) {
     const moves = line.split(" ");
-    const count = parseInt(moves[1]);
-    const fromColumn = parseInt(moves[3]) - 1;
-    const toColumn = parseInt(moves[5]) - 1;
+    const count = parseInt(moves[1], 10);
+    const fromColumn = parseInt(moves[3], 10) - 1;
+    const toColumn = parseInt(moves[5], 10) - 1;
 
     for (let i = 0; i < count; i++) {
       const crate: any = stacks[fromColumn].pop();
@@ -40,12 +40,12 @@ rl.on("line", (line) => {
     //   //   // count
     //   //   // from column (subtract 1)
     //   //   // to column (subtract 1)
-    //   //   console.log({ count, fromColumn, toColumn });
+    console.log({ count, fromColumn, toColumn });
     // console.log(stacks);
   }
 }).on("close", () => {
   const top_crate = stacks.map((stack) => stack[stack.length - 1]).join("");
   console.log(top_crate);
 
-  // console.log(stacks);
+  console.log(stacks);
 });
