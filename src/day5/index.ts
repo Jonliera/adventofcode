@@ -35,13 +35,7 @@ rl.on("line", (line) => {
       stacks[toColumn].push(crate);
     }
 
-    //   //
-    //   //   //parse string , get count from colum and to coolumn
-    //   //   // count
-    //   //   // from column (subtract 1)
-    //   //   // to column (subtract 1)
     console.log({ count, fromColumn, toColumn });
-    // console.log(stacks);
   }
 }).on("close", () => {
   const top_crate = stacks.map((stack) => stack[stack.length - 1]).join("");
