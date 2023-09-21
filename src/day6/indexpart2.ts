@@ -5,9 +5,8 @@ const rl = readline.createInterface({
   input: fs.createReadStream("./input.txt"),
 });
 
-function isUnique(array: any[]) {
-  return array.length === new Set(array).size;
-}
+const isUnique = (array: string[]) => array.length === new Set(array).size;
+
 let messageLength = 14;
 let fourElements: string[] = [];
 rl.on("line", (line) => {
