@@ -1,49 +1,36 @@
-import fs from "fs";
-import readline from "readline";
+import fs from 'fs';
+import readline from 'readline';
+import { isFinite } from 'lodash';
 
 const rl = readline.createInterface({
-  input: fs.createReadStream("./input.txt"),
+  input: fs.createReadStream('./input.txt'),
 });
-const fileSystem = {};
 
-type OurRecord = {
-  [x: string]: OurRecord | string;
-};
-const temp: OurRecord = {
-  herp: {
-    blerp: {
-      derp: "hello",
-    },
-  },
-};
+let overAllSum = 0;
+let folderSum = 0;
 
-const getValueUsingPath = (record: OurRecord, path: string[]) =>
-  path.reduce((acc: OurRecord | string, item) => {
-    if (typeof acc === "string") return acc;
-
-    const returnVal = acc[item];
-    return returnVal;
-  }, record);
-
-const currentLocation = ["herp", "blerp", "derp"];
-
-const results = getValueUsingPath(temp, currentLocation);
-console.log(results);
-
-const fileLocation: string[] = [];
-
-rl.on("line", (line) => {
-  if (line.startsWith("$")) {
-    const [_, command, commandArg] = line.split(" ");
-    if (command === "cd" && commandArg !== "..") {
-      fileLocation.push(commandArg);
-    } else if (command === "cd" && commandArg === "..") {
-      fileLocation.pop();
+rl.on('line', (line) => {
+  if (line === '') {
+    console.log('this is an empty string');
+  }
+  //an empty line or a command means we do our math
+  if (line.startsWith('$') || line === '') {
+    if (folderSum <= 10000) {
+      overAllSum += folderSum;
     }
-    console.log(fileLocation);
+    folderSum = 0;
+    return;
+  }
+
+  const [maybeNumber] = line.split(' ');
+  const maybeNumberNumber = parseInt(maybeNumber);
+  if (isFinite(maybeNumberNumber)) {
+    // console.log(maybeNumberNumber);
+    folderSum += maybeNumberNumber;
   }
 });
 
-rl.on("close", () => {
-  console.log("done");
+rl.on('close', () => {
+  console.log('done');
+  console.log(overAllSum);
 });
